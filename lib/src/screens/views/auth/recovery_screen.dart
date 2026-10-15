@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../components/widgets/main_button.dart';
 
+/// Pantalla para escribir el código de recuperación y la nueva contraseña.
+/// Nota: el botón todavia no está conectado a un servicio; el restablecimiento real se hace con el enlace del correo.
 class RecoveryScreen extends StatefulWidget {
   const RecoveryScreen({super.key});
 
@@ -10,12 +12,15 @@ class RecoveryScreen extends StatefulWidget {
   State<RecoveryScreen> createState() => _RecoveryScreenState();
 }
 
+/// Estado de la pantalla de recuperación.
 class _RecoveryScreenState extends State<RecoveryScreen> {
+  /// Controladores de los tres campos: contraseña nueva, confirmacion y código.
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final codeController = TextEditingController();
 
 
+  /// Dibuja el formulario de recuperación.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,9 +94,10 @@ class _RecoveryScreenState extends State<RecoveryScreen> {
               ),
               SizedBox(height: 30,),
               MainButton(
+                  // Pendiente: aquí iria la llamada que cambia la contraseña.
                   label: "RESET PASSWORD",
                   action: () {
-                    //hacemos la logica para el reset
+                    //hacemos la lógica para el reset
 
                     //adicionl navegamos a la pantalla de recovery
                     //Navigator.push(context, MaterialPageRoute(builder: (context) => RecoveryScreen(),));

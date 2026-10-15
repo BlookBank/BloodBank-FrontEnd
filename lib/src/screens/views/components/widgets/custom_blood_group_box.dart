@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../general/config/colors.dart';
 import '../../../../general/utils/responsive.dart';
 
+/// Cuadricula de 8 botones para elegir el grupo sanguíneo (A+, B+, AB+, O+, A-, B-, AB-, O-).
 class CustomBloodGroupBox extends StatefulWidget {
+  /// Se llama con el grupo elegido cada vez que el usuario toca uno.
   final ValueChanged<String>? onBloodGroupSelected;
+  /// Grupo que aparece seleccionado al abrir (por ejemplo el del perfil).
   final String? initialGroup;
 
   const CustomBloodGroupBox({
@@ -17,8 +20,11 @@ class CustomBloodGroupBox extends StatefulWidget {
   State<CustomBloodGroupBox> createState() => _CustomBloodGroupBoxState();
 }
 
+/// Estado: recuerda cual grupo esta seleccionado.
 class _CustomBloodGroupBoxState extends State<CustomBloodGroupBox> {
+  /// Posicion del grupo seleccionado dentro de [bloodList].
   int selectedIndex = 0;
+  /// Grupos sanguíneos disponibles.
   final bloodList = [
     "A+",
     "B+",
@@ -30,6 +36,7 @@ class _CustomBloodGroupBoxState extends State<CustomBloodGroupBox> {
     "O-",
   ];
 
+  // Si llega un grupo inicial, se marca como seleccionado.
   @override
   void initState() {
     super.initState();
@@ -39,6 +46,7 @@ class _CustomBloodGroupBoxState extends State<CustomBloodGroupBox> {
     }
   }
 
+  /// Dibuja la cuadricula de 4 columnas; el grupo elegido se rellena de rojo.
   @override
   Widget build(BuildContext context) {
     return Center(

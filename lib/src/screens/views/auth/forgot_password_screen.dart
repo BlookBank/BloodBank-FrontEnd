@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../constants/validators.dart';
-import '../components/widgets/main_button.dart';
-import '../../../services/auth_service_firebase.dart';
-import 'otp_recovery_screen.dart';
-import 'recovery_screen.dart';
+import 'package:bloodbank/src/constants/validators.dart';
+import 'package:bloodbank/src/screens/views/auth/otp_recovery_screen.dart';
+import 'package:bloodbank/src/screens/views/components/widgets/main_button.dart';
+import 'package:bloodbank/src/services/auth_service_firebase.dart';
 
+/// Pantalla para recuperar la contraseña: Firebase envía un enlace de restablecimiento al correo.
+/// También ofrece la opción de verificación por número (OTP).
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
@@ -13,14 +14,19 @@ class ForgotPasswordScreen extends StatefulWidget {
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
+/// Estado de la pantalla: campo de correo y llamada al servicio.
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
+  /// Controlador del campo de correo.
   final emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  /// Servicio que envía el correo de restablecimiento via Firebase.
   final _authService = AuthServiceFirebase();
 
+  /// true mientras se envía el correo.
   bool _isLoading = false;
 
+  /// Valida el correo, pide a Firebase que envie el enlace y avisa el resultado.
   Future<void> _handleResetPassword() async{
     if(_formKey.currentState!.validate()){
       setState(() {
@@ -56,6 +62,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
 
+  /// Dibuja la pantalla de recuperación.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,9 +110,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 SizedBox(height: 30,),
                 MainButton(
+                    // Envía el enlace de restablecimiento al correo escrito.
                     label: "SEND",
                     action: () {
-                      //hacemos la logica para el reset
+                      //hacemos la lógica para el reset
                       _handleResetPassword();
                       //adicionl navegamos a la pantalla de recovery
                       //Navigator.push(context, MaterialPageRoute(builder: (context) => RecoveryScreen(),));
@@ -122,6 +130,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     InkWell(
                       onTap: () {
                         //navegamos a la pantalla de OTP
+                        // Alternativa: verificación por número de teléfono (OTP).
                         Navigator.push(context, MaterialPageRoute(builder: (context) => OtpRecoveryScreen(),));
                       },
                       child: Text("Verify Using Number Here", style: TextStyle(

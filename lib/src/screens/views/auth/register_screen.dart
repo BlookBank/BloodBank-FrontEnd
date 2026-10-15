@@ -1,11 +1,16 @@
 
 import 'package:flutter/material.dart';
-import '../../../constants/validators.dart';
+import 'package:bloodbank/src/constants/validators.dart';
+
 import '../../../repositories/auth_repository.dart';
 import '../../../services/auth_service_firebase.dart';
+import '../home/screens/home_screen.dart';
 import 'login_screen.dart';
 
+/// Pantalla de registro: crea la cuenta en Firebase, el perfil en Firestore y la fila en SQL Server.
+/// Al terminar entra directo al Home porque Firebase deja la sesión iniciada.
 class RegisterScreen extends StatefulWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = "/register-screen";
   const RegisterScreen({super.key});
 
@@ -13,10 +18,13 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
+/// Estado del registro: controladores, validación y llamada al servicio.
 class _RegisterScreenState extends State<RegisterScreen> {
 
+  /// Llave del formulario; permite validar todos los campos de una vez.
   final _formKey = GlobalKey<FormState>();
 
+  /// Se usa la interfaz [AuthRepository]; la implementación real es Firebase.
   final AuthRepository _authService = AuthServiceFirebase();
 
   final TextEditingController _nameController = TextEditingController();
@@ -27,7 +35,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   //crear una variable para mostrar un spinning
   bool _isLoading = false;
 
-  //metodo para registrar al usuario
+  //método para registrar al usuario
+  /// Valida el formulario, registra al usuario y navega al Home (o muestra el error).
   Future<void> _register() async{
     //1.-validar el formulario
     if(_formKey.currentState!.validate()){
@@ -43,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
       //3.-Vamos a asegurarnos de que si el usuario cierra
-      //la pantalla, la aplicacion no de error
+      //la pantalla, la aplicación no de error
       if(!mounted) return;
 
       setState(() {
@@ -56,8 +65,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SnackBar(content: Text("Account successfully created!")),
         );
 
-        //navegamos al login o al mainpage
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+        //Firebase ya dejó la sesión iniciada: entramos directo al Home
+        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.pageRoute, (route) => false);
 
       }else{
         ScaffoldMessenger.of(context).showSnackBar(
@@ -68,17 +77,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  /// Libera los controladores al cerrar la pantalla.
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    super.dispose();
   }
 
 
+  /// Dibuja el formulario de registro.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,6 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       TextFormField(
                         controller: _nameController,
+                        // El nombre es obligatorio.
                         validator: nameValidator.call,
                         decoration: InputDecoration(
                             labelText: "Enter your name",
@@ -126,6 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       TextFormField(
                         controller: _emailController,
+                        // Valida el formato del correo.
                         validator: emailvalidator.call,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
@@ -147,6 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       TextFormField(
                         controller: _passwordController,
+                        // Mínimo 8 caracteres y un caracter especial.
                         validator: passwordValidator.call,
                         obscureText: true,
                         decoration: InputDecoration(
@@ -168,7 +181,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 20,),
                       TextFormField(
                         controller: _confirmPasswordController,
-                        validator: passwordValidator.call,
+                        // La confirmacion debe ser igual a la contraseña escrita arriba.
+                        validator: (value) => value != _passwordController.text
+                            ? 'passwords do not match'
+                            : null,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: "Confirm your password",
@@ -200,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 50,),
                       ElevatedButton(
                         onPressed: (){
-                          //llamar al metodo que ejecute el registro
+                          //llamar al método que ejecute el registro
                           _register();
                         },
                         child: _isLoading

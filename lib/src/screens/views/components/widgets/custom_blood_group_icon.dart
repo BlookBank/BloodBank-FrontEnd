@@ -5,6 +5,7 @@ import '../../../../general/config/colors.dart';
 import '../../../../general/utils/responsive.dart';
 
 
+/// Insignia roja decorativa con un grupo sanguíneo de ejemplo (A+). No se usa en las pantallas actuales.
 class CustomBloodGroupIcon extends StatelessWidget {
   const CustomBloodGroupIcon({super.key});
 

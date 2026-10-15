@@ -1,11 +1,22 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+/// Perfil de usuario. Vive en Firestore (users/{uid}) y se copia a SQL Server a través del back.
 class UserProfileModel {
+  /// UID de Firebase.
   final String id;
+  /// Correo del usuario.
   final String email;
+  /// Nombre completo.
   final String name;
+  /// Teléfono (opcional).
   final String? phoneNumber;
+  /// Género: male o female (opcional).
   final String? gender;
+  /// Grupo sanguíneo (opcional).
   final String? bloodGroup;
+  /// Ciudad o zona (opcional).
   final String? location;
+  /// Fecha de creación de la cuenta.
   final DateTime createdAt;
 
   UserProfileModel({
@@ -19,6 +30,7 @@ class UserProfileModel {
     required this.createdAt,
   });
 
+  /// Construye el perfil desde el JSON del back.
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
     return UserProfileModel(
       id: json['id'] as String? ?? '',
@@ -34,6 +46,7 @@ class UserProfileModel {
     );
   }
 
+  /// Convierte el perfil a JSON para enviarlo al back.
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -44,5 +57,51 @@ class UserProfileModel {
       'bloodGroup': bloodGroup,
       'location': location,
     };
+  }
+
+  /// Documento `users/{uid}` de Firestore (el perfil vive en Firebase).
+  factory UserProfileModel.fromFirestore(String id, Map<String, dynamic> data) {
+    final created = data['createdAt'];
+    return UserProfileModel(
+      id: id,
+      email: data['email'] as String? ?? '',
+      name: data['name'] as String? ?? '',
+      phoneNumber: data['phoneNumber'] as String?,
+      gender: data['gender'] as String?,
+      bloodGroup: data['bloodGroup'] as String?,
+      location: data['location'] as String?,
+      createdAt: created is Timestamp ? created.toDate() : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'email': email,
+      'name': name,
+      'phoneNumber': phoneNumber,
+      'gender': gender,
+      'bloodGroup': bloodGroup,
+      'location': location,
+    };
+  }
+
+  /// Copia el perfil cambiando solo los campos indicados (id, correo y fecha no cambian).
+  UserProfileModel copyWith({
+    String? name,
+    String? phoneNumber,
+    String? gender,
+    String? bloodGroup,
+    String? location,
+  }) {
+    return UserProfileModel(
+      id: id,
+      email: email,
+      name: name ?? this.name,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      gender: gender ?? this.gender,
+      bloodGroup: bloodGroup ?? this.bloodGroup,
+      location: location ?? this.location,
+      createdAt: createdAt,
+    );
   }
 }

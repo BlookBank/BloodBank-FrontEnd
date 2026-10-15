@@ -6,15 +6,18 @@ import '../../../../general/config/colors.dart';
 import '../../../../general/utils/blank_space.dart';
 import '../../../../general/utils/responsive.dart';
 import '../../all_requests/screens/all_request_screen.dart';
+import '../../../../services/auth_service_firebase.dart';
+import '../../auth/login_screen.dart';
 import '../../donor_registration/screens/donor_registration_screen.dart';
 import '../../find_donor/screens/find_donor_screen.dart';
-import '../../home/screens/home_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import 'custom_drawer_item.dart';
 
+/// Menú lateral de la app: nombre del usuario, accesos a las secciones y cierre de sesión.
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
 
+  /// Dibuja el menú con fondo rojo semitransparente.
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -51,9 +54,12 @@ class HomeDrawer extends StatelessWidget {
                   ),
                 ),
                 horizontalSpace(twentyPixelWidth(context) * 1),
-                const Text(
-                  "Jorge Perez",
-                  style: TextStyle(
+                Text(
+                  // Muestra el nombre guardado en Firebase Auth; si no hay, el correo, y si tampoco, "Guest".
+                  FirebaseAuth.instance.currentUser?.displayName ??
+                      FirebaseAuth.instance.currentUser?.email ??
+                      "Guest",
+                  style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -87,8 +93,16 @@ class HomeDrawer extends StatelessWidget {
             ),
 
             TextButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
+              onPressed: () async {
+                // Se guarda el navegador antes del await para no usar el contexto después de una espera.
+                final navigator = Navigator.of(context);
+                // Cierra la sesión en Firebase y limpia la sesión guardada del dispositivo.
+                await AuthServiceFirebase().signOut();
+                navigator.pushNamedAndRemoveUntil(
+                  LoginScreen.pageRoute,
+                  // Quita todas las pantallas anteriores: al volver atras no se puede regresar al Home sin sesión.
+                  (route) => false,
+                );
               },
               child: const CustomDrawerItem(
                 onTapp:'',
@@ -112,7 +126,7 @@ class HomeDrawer extends StatelessWidget {
               ),),
             ),
             SizedBox(height: twentyPixelHeight(context)*3,)
-            
+
           ],
         ),
       ),

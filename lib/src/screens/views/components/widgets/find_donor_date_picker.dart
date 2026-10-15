@@ -4,8 +4,11 @@ import '../../../../general/config/colors.dart';
 import '../../../../general/utils/blank_space.dart';
 import '../../../../general/utils/responsive.dart';
 
+/// Selector de fecha: muestra la fecha elegida y un botón de calendario que abre el selector de Material.
 class FindDonorDatePicker extends StatefulWidget {
+  /// Se llama con la fecha elegida.
   final ValueChanged<DateTime>? onDatePicked;
+  /// Fecha que se muestra al abrir (si la hay).
   final DateTime? initialDate;
 
   const FindDonorDatePicker({
@@ -18,7 +21,9 @@ class FindDonorDatePicker extends StatefulWidget {
   State<FindDonorDatePicker> createState() => _FindDonorDatePickerState();
 }
 
+/// Estado: guarda el texto de la fecha elegida.
 class _FindDonorDatePickerState extends State<FindDonorDatePicker> {
+  /// Fecha ya formateada como día-mes-año; null mientras no se elija ninguna.
   String? date;
 
   @override
@@ -29,6 +34,7 @@ class _FindDonorDatePickerState extends State<FindDonorDatePicker> {
     }
   }
 
+  /// Abre el calendario; si el usuario lo cierra sin elegir, no cambia nada.
   Future<void> _pickDate(BuildContext context) async {
     final pickedDate = await showDatePicker(
       context: context,
@@ -44,6 +50,7 @@ class _FindDonorDatePickerState extends State<FindDonorDatePicker> {
     }
   }
 
+  /// Dibuja el recuadro con la fecha y el botón del calendario.
   @override
   Widget build(BuildContext context) {
     return Row(

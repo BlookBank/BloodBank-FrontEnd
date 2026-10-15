@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../../constants/validators.dart';
-import '../home/screens/home_screen.dart';
-import '../components/widgets/main_button.dart';
-import '../../../services/auth_service_firebase.dart';
-import 'forgot_password_screen.dart';
-import 'register_screen.dart';
+import 'package:bloodbank/src/constants/validators.dart';
+import 'package:bloodbank/src/screens/views/auth/forgot_password_screen.dart';
+import 'package:bloodbank/src/screens/views/auth/register_screen.dart';
+import 'package:bloodbank/src/screens/views/components/widgets/main_button.dart';
+import 'package:bloodbank/src/screens/views/home/screens/home_screen.dart';
 
+import '../../../services/auth_service_firebase.dart';
+
+/// Pantalla de inicio de sesión (correo y contraseña) con Firebase Authentication.
+/// Si el inicio es exitoso entra al Home; si no, muestra el error en un SnackBar.
 class LoginScreen extends StatefulWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = "/login-screen";
   const LoginScreen({super.key});
 
@@ -14,16 +18,23 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+/// Estado de la pantalla de login: controladores de texto, validación y llamada al servicio.
 class _LoginScreenState extends State<LoginScreen> {
+  /// Llave del formulario; permite validar todos los campos de una vez con validate().
   final _formKey = GlobalKey<FormState>();
+  /// Servicio que habla con Firebase Authentication.
   final _authService = AuthServiceFirebase();
 
+  /// true mientras se espera la respuesta de Firebase (el botón muestra un indicador de carga).
   bool _isLoading = false;
+  /// true = la contraseña se muestra oculta (con puntos); el icono del ojo lo alterna.
   bool _showPassword = true;
 
+  /// Controladores para leer lo que el usuario escribio en cada campo.
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  /// Valida el formulario, inicia sesión en Firebase y navega al Home o muestra el error.
   void _login() async {
     // 1. Quitar el foco del teclado globalmente
     FocusManager.instance.primaryFocus?.unfocus();
@@ -45,9 +56,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
-      // 5. Manejar respuesta
       setState(() => _isLoading = false);
 
+      // 5. Si la autenticación fue exitosa, entramos al Home (la sesión queda
+      // guardada por Firebase y se restaura al abrir la app).
       if (response == "Success") {
         Navigator.pushReplacementNamed(context, HomeScreen.pageRoute);
       } else {
@@ -61,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  /// Libera los controladores al cerrar la pantalla.
   @override
   void dispose() {
     _emailController.dispose();
@@ -68,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  /// Dibuja el formulario de inicio de sesión.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,6 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
+                    // Validación de formato de correo (constants/validators.dart).
                     validator: emailvalidator.call,
                     decoration: InputDecoration(
                       labelText: "Enter your Email",
@@ -111,6 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
                   TextFormField(
                     controller: _passwordController,
+                    // Oculta la contraseña mientras se escribe.
                     obscureText: _showPassword,
                     validator: passwordValidator.call,
                     decoration: InputDecoration(
@@ -151,6 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       },
                       child: Text(
+                        // Enlace a la recuperación de contraseña.
                         "Forgot Your Password?",
                         style: TextStyle(
                           color: Theme.of(context).primaryColor,
@@ -162,6 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 30),
                   MainButton(
+                    // Botón principal: con isLoading muestra un indicador mientras se autentica.
                     label: "LOGIN",
                     action: _login,
                     isLoading: _isLoading,
@@ -184,6 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                         child: Text(
+                          // Enlace a la pantalla de registro.
                           "Register Here",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,

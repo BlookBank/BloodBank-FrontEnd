@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../../../general/config/colors.dart';
 import '../../../../general/utils/blank_space.dart';
@@ -12,7 +14,10 @@ import '../../profile/screens/profile_screen.dart';
 import '../widgets/custom_home_container.dart';
 import '../widgets/request_feed_item.dart';
 
+/// Pantalla principal: accesos rápidos (buscar donante, solicitudes, quiero donar) y el feed de solicitudes en vivo.
+/// Los datos vienen del back y se refrescan solos cada 15 segundos.
 class HomeScreen extends StatefulWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = "/home-screen";
 
   const HomeScreen({super.key});
@@ -21,19 +26,37 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+/// Estado del Home: lista de solicitudes y temporizador de actualización.
 class _HomeScreenState extends State<HomeScreen> {
+  /// Llave del Scaffold: permite abrir el menú lateral desde el icono de la barra.
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  /// Servicio que consulta las solicitudes en el back (SQL Server).
   final BloodRequestService _bloodRequestService = BloodRequestService();
 
+  /// Solicitudes mostradas en el feed.
   List<BloodRequestModel> _requests = [];
+  /// true hasta que llega la primera respuesta del back.
   bool _isLoading = true;
+  /// Temporizador que vuelve a pedir las solicitudes cada 15 segundos (datos en vivo).
+  Timer? _liveTimer;
 
+  /// Carga las solicitudes al abrir y programa la actualización automática.
   @override
   void initState() {
     super.initState();
     _loadRequests();
+    // Datos en vivo: se vuelve a consultar el back cada 15 segundos
+    _liveTimer = Timer.periodic(const Duration(seconds: 15), (_) => _loadRequests());
   }
 
+  /// Cancela el temporizador al salir de la pantalla.
+  @override
+  void dispose() {
+    _liveTimer?.cancel();
+    super.dispose();
+  }
+
+  /// Pide las solicitudes al back y actualiza la lista; si falla, deja la lista como estaba.
   Future<void> _loadRequests() async {
     try {
       final reqs = await _bloodRequestService.getRequests();
@@ -52,10 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Dibuja la barra superior, el menú lateral y el contenido con pull-to-refresh.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      // Menú lateral con las secciones de la app y el cierre de sesión.
       drawer: const HomeDrawer(),
       appBar: AppBar(
         backgroundColor: AppColor.redColor,
@@ -100,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
           textScaler: TextScaler.linear(ScaleSize.textScaleFactor(context)),
         ),
       ),
+      // Deslizar hacia abajo vuelve a cargar las solicitudes.
       body: RefreshIndicator(
         onRefresh: _loadRequests,
         color: AppColor.redColor,
@@ -131,6 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: CustomHomeContainer(
                         containerBgColor: AppColor.whiteColor,
+                        // Tarjeta que abre el formulario para pedir sangre; al volver se recarga el feed.
                         containerTextt: "Find a donor",
                         imageUrl: "assets/images/home_donor.png",
                         textColorr: AppColor.redColor,
@@ -147,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: CustomHomeContainer(
                         containerBgColor: AppColor.redColor,
+                        // Tarjeta que abre la lista completa de solicitudes con filtro.
                         containerTextt: "Requests",
                         imageUrl: "assets/images/home_request.png",
                         textColorr: AppColor.whiteColor,
@@ -170,6 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: CustomHomeContainer(
                         containerBgColor: AppColor.whiteColor,
+                        // Tarjeta que abre el formulario para registrarse como donante.
                         containerTextt: "I want to donate",
                         imageUrl: "assets/images/home_blood.png",
                         textColorr: AppColor.redColor,
@@ -210,6 +239,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
+                // Primera carga: indicador de progreso.
                 if (_isLoading && _requests.isEmpty)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: twentyPixelHeight(context) * 2),
@@ -217,9 +247,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: CircularProgressIndicator(color: AppColor.redColor),
                     ),
                   )
+                // Sin solicitudes: mensaje en lugar de datos de ejemplo.
+                else if (_requests.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: twentyPixelHeight(context) * 2),
+                    child: const Center(
+                      child: Text(
+                        "No blood requests yet. Pull down to refresh.",
+                        style: TextStyle(fontFamily: 'Poppins', color: AppColor.textAss),
+                      ),
+                    ),
+                  )
                 else
+                  // Feed de solicitudes; no hace scroll propio porque toda la pantalla ya hace scroll.
                   ListView.builder(
-                    itemCount: _requests.isNotEmpty ? _requests.length : 3,
+                    itemCount: _requests.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
@@ -227,9 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.only(
                           top: twentyPixelHeight(context) * 1,
                         ),
-                        child: CustomRequestFeedItem(
-                          request: _requests.isNotEmpty ? _requests[index] : null,
-                        ),
+                        child: CustomRequestFeedItem(request: _requests[index]),
                       );
                     },
                   ),
