@@ -30,19 +30,19 @@ class OnboardingScreen extends StatelessWidget {
         pages: [
           PageViewModel(
             title: "Save lives",
-            body: 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney',
+            body: 'Every donation can help save up to three lives. Find people who need blood and respond in minutes.',
             image: Center(child: Image.asset('assets/images/save_lives.png'),),
             decoration: pageDecoration,
           ),
           PageViewModel(
             title: "Secure",
-            body: 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney',
+            body: 'Your account is protected with secure sign-in, and only you can see and edit your personal profile.',
             image: Center(child: Image.asset('assets/images/secure.png'),),
             decoration: pageDecoration,
           ),
           PageViewModel(
             title: "Easy to Use",
-            body: 'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney',
+            body: 'Request blood, register as a donor and chat with people in need, all from one simple app.',
             image: Center(child: Image.asset('assets/images/easy.png'),),
             decoration: pageDecoration,
             footer: Padding(
