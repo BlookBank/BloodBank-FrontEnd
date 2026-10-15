@@ -11,7 +11,9 @@ import '../../components/widgets/custom_appbar.dart';
 import '../../components/widgets/custom_blood_filter_box.dart';
 import '../../home/widgets/request_feed_item.dart';
 
+/// Lista completa de solicitudes con filtro por grupo sanguíneo; se actualiza sola cada 15 segundos.
 class AllRequestScreen extends StatefulWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = "/all-request";
   const AllRequestScreen({super.key});
 
@@ -19,13 +21,20 @@ class AllRequestScreen extends StatefulWidget {
   State<AllRequestScreen> createState() => _AllRequestScreenState();
 }
 
+/// Estado: solicitudes, filtro actual y temporizador de actualización.
 class _AllRequestScreenState extends State<AllRequestScreen> {
+  /// Servicio que consulta las solicitudes en el back.
   final BloodRequestService _bloodRequestService = BloodRequestService();
+  /// Solicitudes mostradas (ya filtradas por el servidor).
   List<BloodRequestModel> _requests = [];
+  /// true mientras se consulta el back (solo se muestra en cargas no silenciosas).
   bool _isLoading = true;
+  /// Grupo sanguíneo seleccionado en el filtro ("All" = todas).
   String _currentFilter = "All";
+  /// Temporizador de actualización automática.
   Timer? _liveTimer;
 
+  /// Carga la lista al abrir y programa la actualización automática.
   @override
   void initState() {
     super.initState();
@@ -37,12 +46,14 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
     );
   }
 
+  /// Cancela el temporizador al salir de la pantalla.
   @override
   void dispose() {
     _liveTimer?.cancel();
     super.dispose();
   }
 
+  /// Consulta las solicitudes del filtro actual. Con [silent] no muestra el indicador de carga (actualización automática).
   Future<void> _fetchRequests([String? bloodGroup, bool silent = false]) async {
     if (!silent) setState(() => _isLoading = true);
     try {
@@ -60,11 +71,13 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
     }
   }
 
+  /// Guarda el nuevo filtro y vuelve a consultar al back.
   void _onFilterChanged(String bloodGroup) {
     _currentFilter = bloodGroup;
     _fetchRequests(bloodGroup);
   }
 
+  /// Dibuja el filtro y la lista de solicitudes con pull-to-refresh.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,10 +119,12 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                   ],
                 ),
                 verticalSpace(twentyPixelHeight(context) * .5),
+                // Chips de grupo sanguíneo; al elegir uno se vuelve a consultar con ese filtro.
                 CustomBloodFilterBox(
                   onFilterChanged: _onFilterChanged,
                 ),
                 verticalSpace(twentyPixelHeight(context) * 1),
+                // Primera carga: indicador de progreso.
                 if (_isLoading && _requests.isEmpty)
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: twentyPixelHeight(context) * 2),

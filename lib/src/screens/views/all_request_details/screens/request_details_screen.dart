@@ -8,12 +8,17 @@ import '../widgets/custom_call_btn.dart';
 import '../../chat/screens/chat_screen.dart';
 import '../widgets/request_details_item.dart';
 
+/// Detalle de una solicitud. Recibe la solicitud como argumento de la ruta (Navigator.pushNamed(..., arguments: request)).
+/// Message abre el chat en tiempo real; Call queda sin función por ahora.
 class RequestDetailsScreen extends StatelessWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = "/request-details-screen";
   const RequestDetailsScreen({super.key});
 
+  /// Dibuja los datos de la solicitud y los botones Call y Message.
   @override
   Widget build(BuildContext context) {
+    // Solicitud enviada desde la tarjeta; es null si se abrio la ruta sin argumentos.
     final request = ModalRoute.of(context)?.settings.arguments as BloodRequestModel?;
 
     return Scaffold(
@@ -66,6 +71,7 @@ class RequestDetailsScreen extends StatelessWidget {
               ),
               verticalSpace(twentyPixelHeight(context)),
               const CustomCallButton(
+                // Call no hace nada por ahora (decisión del proyecto: solo Message es funcional).
                 textt: "Call",
                 textColor: AppColor.whiteColor,
                 fillColor: AppColor.redColor,
@@ -74,6 +80,7 @@ class RequestDetailsScreen extends StatelessWidget {
               verticalSpace(twentyPixelHeight(context) * .5),
               InkWell(
                 borderRadius: BorderRadius.circular(10),
+                // Message: abre el chat de esta solicitud (deshabilitado si no hay solicitud).
                 onTap: request == null
                     ? null
                     : () {

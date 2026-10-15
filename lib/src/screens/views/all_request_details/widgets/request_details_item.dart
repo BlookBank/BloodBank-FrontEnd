@@ -5,8 +5,11 @@ import '../../../../general/utils/blank_space.dart';
 import '../../../../general/utils/responsive.dart';
 
 
+/// Par "titulo gris + valor en negrita" usado en el detalle de solicitud y en el perfil.
 class RequestDetailsItem extends StatelessWidget {
+  /// Título pequeño en gris (por ejemplo "Blood Group").
   final String titlee;
+  /// Valor mostrado debajo del título.
   final String textt;
   const RequestDetailsItem({super.key, required this.titlee, required this.textt});
 

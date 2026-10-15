@@ -10,7 +10,10 @@ import '../../components/widgets/custom_appbar.dart';
 
 /// Chat en tiempo real de una solicitud de sangre (mensajes guardados en
 /// Firestore; la solicitud viene del back).
+/// Chat en tiempo real de una solicitud de sangre. Los mensajes viven en Firestore (requestChats/{id}/messages);
+/// es un hilo por solicitud, visible para todos los usuarios con sesión.
 class ChatScreen extends StatefulWidget {
+  /// Solicitud a la que pertenece el chat.
   final BloodRequestModel request;
 
   const ChatScreen({super.key, required this.request});
@@ -19,13 +22,19 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
+/// Estado del chat: texto escrito, scroll y bandera de envio.
 class _ChatScreenState extends State<ChatScreen> {
+  /// Servicio que lee y envía los mensajes en Firestore.
   final ChatService _chatService = ChatService();
+  /// Controlador del campo donde se escribe el mensaje.
   final TextEditingController _messageController = TextEditingController();
+  /// Permite bajar la lista hasta el último mensaje.
   final ScrollController _scrollController = ScrollController();
 
+  /// true mientras se envía un mensaje (evita enviarlo dos veces).
   bool _isSending = false;
 
+  /// Libera los controladores al cerrar la pantalla.
   @override
   void dispose() {
     _messageController.dispose();
@@ -33,6 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
+  /// Envía el mensaje escrito y limpia el campo; si falla, muestra el error.
   Future<void> _send() async {
     final text = _messageController.text.trim();
     if (text.isEmpty || _isSending) return;
@@ -54,6 +64,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  /// Baja la lista hasta el último mensaje después de dibujar.
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -66,6 +77,7 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  /// Dibuja la lista de mensajes y la barra para escribir.
   @override
   Widget build(BuildContext context) {
     final myUid = FirebaseAuth.instance.currentUser?.uid;
@@ -79,6 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder<List<ChatMessageModel>>(
+              // StreamBuilder: se redibuja solo cada vez que llega un mensaje nuevo, sin recargar nada.
               stream: _chatService.watchMessages(widget.request.id),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
@@ -177,12 +190,16 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
+/// Burbuja de un mensaje: roja y a la derecha si es mio, gris y a la izquierda si es de otra persona.
 class _MessageBubble extends StatelessWidget {
+  /// Mensaje que se dibuja.
   final ChatMessageModel message;
+  /// true si lo envio el usuario con sesión iniciada.
   final bool isMine;
 
   const _MessageBubble({required this.message, required this.isMine});
 
+  /// Dibuja la burbuja con el nombre del remitente (solo en mensajes ajenos) y el texto.
   @override
   Widget build(BuildContext context) {
     return Align(

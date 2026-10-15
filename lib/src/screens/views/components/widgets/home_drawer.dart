@@ -13,9 +13,11 @@ import '../../find_donor/screens/find_donor_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import 'custom_drawer_item.dart';
 
+/// Menú lateral de la app: nombre del usuario, accesos a las secciones y cierre de sesión.
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
 
+  /// Dibuja el menú con fondo rojo semitransparente.
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -53,6 +55,7 @@ class HomeDrawer extends StatelessWidget {
                 ),
                 horizontalSpace(twentyPixelWidth(context) * 1),
                 Text(
+                  // Muestra el nombre guardado en Firebase Auth; si no hay, el correo, y si tampoco, "Guest".
                   FirebaseAuth.instance.currentUser?.displayName ??
                       FirebaseAuth.instance.currentUser?.email ??
                       "Guest",
@@ -91,10 +94,13 @@ class HomeDrawer extends StatelessWidget {
 
             TextButton(
               onPressed: () async {
+                // Se guarda el navegador antes del await para no usar el contexto después de una espera.
                 final navigator = Navigator.of(context);
+                // Cierra la sesión en Firebase y limpia la sesión guardada del dispositivo.
                 await AuthServiceFirebase().signOut();
                 navigator.pushNamedAndRemoveUntil(
                   LoginScreen.pageRoute,
+                  // Quita todas las pantallas anteriores: al volver atras no se puede regresar al Home sin sesión.
                   (route) => false,
                 );
               },

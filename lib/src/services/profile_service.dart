@@ -7,9 +7,11 @@ import 'api/user_service.dart';
 /// Perfil del usuario guardado en Firebase (Firestore: users/{uid}).
 /// Al editarlo también se refleja en la tabla Users de SQL Server vía el back.
 class ProfileService {
+  // Firestore guarda el perfil; UserService lo replica en SQL Server.
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserService _userService = UserService();
 
+  /// Documento del perfil de un usuario: users/{uid}.
   DocumentReference<Map<String, dynamic>> _doc(String uid) =>
       _firestore.collection('users').doc(uid);
 
@@ -33,6 +35,7 @@ class ProfileService {
     );
   }
 
+  /// Guarda el perfil en Firestore (merge: no borra campos que no se envían). Si [isNew], marca la fecha de creación.
   Future<void> saveProfile(UserProfileModel profile, {bool isNew = false}) async {
     final data = profile.toFirestore();
     if (isNew) {

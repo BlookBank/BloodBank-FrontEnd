@@ -12,7 +12,9 @@ import '../../components/widgets/custom_form_textfield.dart';
 import '../../components/widgets/custom_red_btn.dart';
 import '../../components/widgets/find_donor_date_picker.dart';
 
+/// Formulario para registrarse como donante; guarda el registro en el back (SQL Server).
 class DonorRegistrationForm extends StatefulWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = "/donor-registraion";
 
   const DonorRegistrationForm({super.key});
@@ -21,17 +23,24 @@ class DonorRegistrationForm extends StatefulWidget {
   State<DonorRegistrationForm> createState() => _DonorRegistrationFormState();
 }
 
+/// Estado del formulario: controladores y opciones elegidas.
 class _DonorRegistrationFormState extends State<DonorRegistrationForm> {
+  /// Servicio que registra al donante en el back.
   final DonorService _donorService = DonorService();
 
+  /// Nombre del donante; arranca con el nombre de la cuenta de Firebase.
   final TextEditingController _nameController = TextEditingController(text: FirebaseAuth.instance.currentUser?.displayName ?? "");
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
+  /// Grupo sanguíneo elegido.
   String _selectedBloodGroup = "A+";
+  /// Fecha de la última donación; null hasta que el usuario la elija.
   DateTime? _lastDonationDate;
+  /// true mientras se envía el registro.
   bool _isLoading = false;
 
+  /// Libera los controladores al cerrar la pantalla.
   @override
   void dispose() {
     _nameController.dispose();
@@ -40,6 +49,7 @@ class _DonorRegistrationFormState extends State<DonorRegistrationForm> {
     super.dispose();
   }
 
+  /// Valida los campos obligatorios, registra al donante y vuelve a la pantalla anterior.
   Future<void> _submitDonor() async {
     final name = _nameController.text.trim();
     final contact = _contactController.text.trim();
@@ -89,6 +99,7 @@ class _DonorRegistrationFormState extends State<DonorRegistrationForm> {
     }
   }
 
+  /// Dibuja el formulario.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,6 +130,7 @@ class _DonorRegistrationFormState extends State<DonorRegistrationForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
+                    // Los iconos de cámara y galería son solo visuales: aún no se puede subir una foto.
                     "assets/icons/camera_2.png",
                     width: twentyPixelWidth(context) * 1.5,
                   ),

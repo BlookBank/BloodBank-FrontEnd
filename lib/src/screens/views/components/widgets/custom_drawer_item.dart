@@ -5,12 +5,17 @@ import '../../../../general/config/colors.dart';
 import '../../../../general/utils/blank_space.dart';
 import '../../../../general/utils/responsive.dart';
 
+/// Opción del menú lateral: icono + texto. Al tocarla abre la ruta indicada en [onTapp].
 class CustomDrawerItem extends StatelessWidget {
+  /// Texto de la opción.
   final String textt;
+  /// Icono mostrado a la izquierda del texto.
   final IconData suffixIcon;
+  /// Nombre de la ruta a abrir; si esta vacio no navega (lo usa Logout, que maneja su propio toque).
   final String onTapp;
   const CustomDrawerItem({super.key, required this.textt, required this.suffixIcon, required this.onTapp});
 
+  /// Dibuja la fila con icono y texto en blanco sobre el fondo rojo del menú.
   @override
   Widget build(BuildContext context) {
     return Padding(

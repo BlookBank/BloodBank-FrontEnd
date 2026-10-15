@@ -6,13 +6,16 @@ import '../../../../general/utils/responsive.dart';
 import '../../../../models/blood_request_model.dart';
 import '../../all_request_details/screens/request_details_screen.dart';
 
+/// Tarjeta de una solicitud en el feed: grupo sanguíneo, paciente, bolsas y motivo, lugar, fecha y botón Details.
 class CustomRequestFeedItem extends StatelessWidget {
+  /// Solicitud a mostrar; si es null se dibujan datos de muestra.
   final BloodRequestModel? request;
 
   const CustomRequestFeedItem({super.key, this.request});
 
   @override
   Widget build(BuildContext context) {
+    // Textos de la tarjeta: los de la solicitud, o valores de muestra si no hay solicitud.
     final bloodGroup = request?.bloodGroup ?? 'A+';
     final patientName = request?.patientName ?? 'Jorge Perez';
     final caseDesc = request != null 
@@ -211,6 +214,7 @@ class CustomRequestFeedItem extends StatelessWidget {
                     Navigator.pushNamed(
                       context, 
                       RequestDetailsScreen.pageRoute,
+                      // La solicitud viaja como argumento de la ruta hacia la pantalla de detalles.
                       arguments: request,
                     );
                   },

@@ -6,11 +6,16 @@ import '../../../../general/utils/blank_space.dart';
 import '../../../../general/utils/responsive.dart';
 
 
+/// Tarjeta cuadrada de acceso rápido del Home: imagen arriba y texto abajo.
 // ignore: must_be_immutable
 class CustomHomeContainer extends StatelessWidget {
+  /// Color de fondo de la tarjeta.
   Color containerBgColor;
+  /// Texto de la tarjeta.
   String containerTextt;
+  /// Ruta de la imagen dentro de assets.
   String imageUrl;
+  /// Color del texto (rojo sobre blanco o blanco sobre rojo).
   Color textColorr;
 
   CustomHomeContainer({

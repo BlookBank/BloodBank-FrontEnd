@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import '../home/screens/home_screen.dart';
 import 'onboarding_screen.dart';
 
+/// Pantalla de arranque con la imagen de marca. Después de 3 segundos decide el destino segun haya sesión guardada.
 class SplashScreen extends StatefulWidget {
+  /// Nombre de la ruta inicial registrada en main.dart.
   static const pageRoute = "/splash-screen";
   const SplashScreen({super.key});
 
@@ -14,9 +16,12 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
+/// Estado del splash: controla el temporizador.
 class _SplashScreenState extends State<SplashScreen> {
+  /// Temporizador de 3 segundos; se cancela al salir para evitar navegar con la pantalla cerrada.
   Timer? _timer;
 
+  // Al abrir la pantalla se programa la navegación.
   @override
   void initState() {
     super.initState();
@@ -45,12 +50,14 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  /// Cancela el temporizador al cerrar la pantalla.
   @override
   void dispose() {
     _timer?.cancel();
     super.dispose();
   }
 
+  /// Dibuja la imagen de fondo a pantalla completa con un velo oscuro.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

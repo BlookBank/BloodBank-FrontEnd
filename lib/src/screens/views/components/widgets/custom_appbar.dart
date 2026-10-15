@@ -7,13 +7,19 @@ import '../../../../general/utils/responsive.dart';
 import '../../profile/screens/profile_screen.dart';
 
 
+/// Barra superior roja común a las pantallas internas: flecha de volver, título centrado y, opcionalmente, el acceso al perfil.
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  /// Título mostrado en el centro.
   final String titlee;
+  /// Widget a la izquierda; si es null se muestra la flecha para volver.
   final Widget? leadingBtn;
+  /// true muestra el icono del perfil a la derecha.
   final bool actionTrue;
+  /// true desactiva el toque del icono (se usa en la propia pantalla de perfil).
   final bool? profileFalse;
   const CustomAppBar({super.key, required this.titlee, this.leadingBtn, required this.actionTrue, this.profileFalse});
 
+  /// Construye la AppBar con los estilos de la app.
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -32,6 +38,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           actionTrue == true?
           InkWell(
             onTap: (){
+              // Al tocar el icono se abre el perfil, salvo que ya estemos en el.
               profileFalse != true? Navigator.pushNamed(context, ProfileScreen.pageRoute):null;
             },
             child: Container(
@@ -65,5 +72,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
 
+  /// Altura que ocupa la barra (la estándar de Material).
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

@@ -11,10 +11,12 @@ import 'package:http/http.dart' as http;
 /// el dispositivo y lo renueva solo), así la sesión se mantiene entre reinicios
 /// de la app y el backend siempre recibe un token válido.
 class ApiClient {
+  /// Instancia única (singleton): toda la app comparte la misma URL base y el mismo cliente.
   static final ApiClient _instance = ApiClient._internal();
   factory ApiClient() => _instance;
   ApiClient._internal();
 
+  /// Tiempo máximo de espera de cada petición antes de fallar.
   static const Duration _timeout = Duration(seconds: 10);
 
   /// URL por defecto según la plataforma. Para un celular real usa
@@ -28,20 +30,25 @@ class ApiClient {
     return "http://localhost:5295/api";
   }
 
+  /// URL base actual del API; se puede cambiar con [setBaseUrl].
   String _baseUrl = defaultBaseUrl;
 
+  /// URL base actual del API (sin barra final).
   String get baseUrl => _baseUrl;
 
+  /// Cambia la URL base, por ejemplo para probar en un celular real con la IP de la PC.
   void setBaseUrl(String url) {
     _baseUrl = url.endsWith('/') ? url.substring(0, url.length - 1) : url;
   }
 
+  /// Cabeceras de cada petición: JSON más el token de Firebase del usuario (si hay sesión).
   Future<Map<String, String>> _headers() async {
     final headers = <String, String>{
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
     try {
+      // getIdToken devuelve el token vigente y lo renueva solo si esta por vencer.
       final token = await FirebaseAuth.instance.currentUser?.getIdToken();
       if (token != null) headers['Authorization'] = 'Bearer $token';
     } catch (_) {
@@ -50,6 +57,7 @@ class ApiClient {
     return headers;
   }
 
+  /// Arma la URL completa a partir del endpoint y los parámetros de consulta opcionales.
   Uri _uri(String endpoint, [Map<String, String>? queryParams]) {
     final uri = Uri.parse("$_baseUrl$endpoint");
     return (queryParams != null && queryParams.isNotEmpty)
@@ -57,11 +65,13 @@ class ApiClient {
         : uri;
   }
 
+  /// GET: consulta datos. Devuelve el JSON ya decodificado.
   Future<dynamic> get(String endpoint, {Map<String, String>? queryParams}) {
     return _send('GET', endpoint,
         () async => http.get(_uri(endpoint, queryParams), headers: await _headers()));
   }
 
+  /// POST: crea un recurso con el cuerpo [data].
   Future<dynamic> post(String endpoint, Map<String, dynamic> data) {
     return _send(
         'POST',
@@ -70,6 +80,7 @@ class ApiClient {
             headers: await _headers(), body: jsonEncode(data)));
   }
 
+  /// PUT: reemplaza o actualiza un recurso con el cuerpo [data].
   Future<dynamic> put(String endpoint, Map<String, dynamic> data) {
     return _send(
         'PUT',
@@ -78,6 +89,7 @@ class ApiClient {
             headers: await _headers(), body: jsonEncode(data)));
   }
 
+  /// PATCH: modifica una parte de un recurso.
   Future<dynamic> patch(String endpoint, Object? data) {
     return _send(
         'PATCH',
@@ -86,11 +98,13 @@ class ApiClient {
             headers: await _headers(), body: jsonEncode(data)));
   }
 
+  /// DELETE: elimina un recurso.
   Future<dynamic> delete(String endpoint) {
     return _send('DELETE', endpoint,
         () async => http.delete(_uri(endpoint), headers: await _headers()));
   }
 
+  /// Ejecuta la petición con tiempo limite, procesa la respuesta y registra el error en modo debug.
   Future<dynamic> _send(
     String method,
     String endpoint,
@@ -107,6 +121,7 @@ class ApiClient {
     }
   }
 
+  /// Convierte la respuesta HTTP: si es exitosa (2xx) devuelve el JSON; si no, lanza una excepción con el mensaje del back.
   dynamic _processResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.body.isEmpty) return null;
@@ -114,6 +129,7 @@ class ApiClient {
     }
 
     String errorMessage = "Server error (${response.statusCode})";
+    // 401 = token ausente o vencido: se muestra un mensaje claro para el usuario.
     if (response.statusCode == 401) {
       errorMessage = "Your session expired. Please log in again.";
     }

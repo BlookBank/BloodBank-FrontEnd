@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../../../../general/utils/responsive.dart';
 
+/// Botón con borde redondeado; por defecto rojo, pero los colores se pueden cambiar (por ejemplo texto rojo sobre blanco).
 class CustomRedBtn extends StatelessWidget {
+  /// Texto del botón.
   final String textt;
+  /// Color del texto (y del indicador de carga).
   final Color textColor;
+  /// Color de relleno.
   final Color fillColor;
+  /// Color del borde; si es null usa el color del texto.
   final Color? borderClr;
+  /// Acción al tocar; si es null el botón no hace nada.
   final VoidCallback? onTap;
+  /// true muestra un indicador de progreso y desactiva el toque.
   final bool isLoading;
 
   const CustomRedBtn({
@@ -20,6 +27,7 @@ class CustomRedBtn extends StatelessWidget {
     this.isLoading = false,
   });
 
+  /// Dibuja el botón.
   @override
   Widget build(BuildContext context) {
     return InkWell(
