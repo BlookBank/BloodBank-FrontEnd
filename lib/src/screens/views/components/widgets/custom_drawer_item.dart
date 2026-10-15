@@ -5,14 +5,16 @@ import '../../../../general/config/colors.dart';
 import '../../../../general/utils/blank_space.dart';
 import '../../../../general/utils/responsive.dart';
 
-/// Opción del menú lateral: icono + texto. Al tocarla abre la ruta indicada en [onTapp].
+/// Opción del menú lateral: icono + texto. Al tocarla ejecuta [onPressed] o, si no hay,
+/// abre la ruta indicada en [onTapp]. Sin ninguna de las dos no captura el toque.
 class CustomDrawerItem extends StatelessWidget {
   /// Texto de la opción.
   final String textt;
   /// Icono mostrado a la izquierda del texto.
   final IconData suffixIcon;
-  /// Nombre de la ruta a abrir; si esta vacio no navega (lo usa Logout, que maneja su propio toque).
+  /// Nombre de la ruta a abrir; si está vacío no navega.
   final String onTapp;
+  /// Acción propia al tocar (por ejemplo Logout); tiene prioridad sobre [onTapp].
   final VoidCallback? onPressed;
   const CustomDrawerItem({super.key, required this.textt, required this.suffixIcon, this.onTapp = '', this.onPressed});
 
