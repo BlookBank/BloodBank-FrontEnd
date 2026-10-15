@@ -10,6 +10,7 @@ import 'src/screens/views/all_requests/screens/all_request_screen.dart';
 import 'src/screens/views/auth/login_screen.dart';
 import 'src/screens/views/auth/register_screen.dart';
 import 'src/screens/views/donor_registration/screens/donor_registration_screen.dart';
+import 'src/screens/views/donors/screens/donors_screen.dart';
 import 'src/screens/views/edit_profile/screens/edit_profile_screen.dart';
 import 'src/screens/views/find_donor/screens/find_donor_screen.dart';
 import 'src/screens/views/home/screens/home_screen.dart';
@@ -64,6 +65,7 @@ class MyApp extends StatelessWidget {
         AllRequestScreen.pageRoute: (context) => const AllRequestScreen(),
         RequestDetailsScreen.pageRoute: (context) => const RequestDetailsScreen(),
         FindDonorScreen.pageRoute: (context) => const FindDonorScreen(),
+        DonorsScreen.pageRoute: (context) => const DonorsScreen(),
         DonorRegistrationForm.pageRoute: (context) => const DonorRegistrationForm(),
         ProfileScreen.pageRoute: (context) => const ProfileScreen(),
         EditProfileScreen.pageRoute: (context) => const EditProfileScreen(),
