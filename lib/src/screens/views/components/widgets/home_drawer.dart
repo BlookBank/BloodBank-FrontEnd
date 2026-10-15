@@ -9,6 +9,7 @@ import '../../all_requests/screens/all_request_screen.dart';
 import '../../../../services/auth_service_firebase.dart';
 import '../../auth/login_screen.dart';
 import '../../donor_registration/screens/donor_registration_screen.dart';
+import '../../donors/screens/donors_screen.dart';
 import '../../find_donor/screens/find_donor_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import 'custom_drawer_item.dart';
@@ -78,6 +79,12 @@ class HomeDrawer extends StatelessWidget {
               onTapp:FindDonorScreen.pageRoute,
               suffixIcon: Icons.person_outline,
               textt: "Find Donors",
+            ),
+
+            const CustomDrawerItem(
+              onTapp: DonorsScreen.pageRoute,
+              suffixIcon: Icons.people_alt_outlined,
+              textt: "Donors",
             ),
 
             const CustomDrawerItem(
