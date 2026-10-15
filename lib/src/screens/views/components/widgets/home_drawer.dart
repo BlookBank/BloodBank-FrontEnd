@@ -92,7 +92,9 @@ class HomeDrawer extends StatelessWidget {
               textt: "Profile",
             ),
 
-            TextButton(
+            CustomDrawerItem(
+              suffixIcon: Icons.logout,
+              textt: "Logout",
               onPressed: () async {
                 // Se guarda el navegador antes del await para no usar el contexto después de una espera.
                 final navigator = Navigator.of(context);
@@ -104,11 +106,6 @@ class HomeDrawer extends StatelessWidget {
                   (route) => false,
                 );
               },
-              child: const CustomDrawerItem(
-                onTapp:'',
-                suffixIcon: Icons.logout,
-                textt: "Logout"
-              ),
             ),
 
             const Expanded(child: SizedBox()),

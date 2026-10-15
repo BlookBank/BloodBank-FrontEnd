@@ -13,7 +13,8 @@ class CustomDrawerItem extends StatelessWidget {
   final IconData suffixIcon;
   /// Nombre de la ruta a abrir; si esta vacio no navega (lo usa Logout, que maneja su propio toque).
   final String onTapp;
-  const CustomDrawerItem({super.key, required this.textt, required this.suffixIcon, required this.onTapp});
+  final VoidCallback? onPressed;
+  const CustomDrawerItem({super.key, required this.textt, required this.suffixIcon, this.onTapp = '', this.onPressed});
 
   /// Dibuja la fila con icono y texto en blanco sobre el fondo rojo del menú.
   @override
@@ -23,11 +24,10 @@ class CustomDrawerItem extends StatelessWidget {
                 bottom: twentyPixelHeight(context)*1
               ),
               child: InkWell(
-                onTap: (){
-                  if (onTapp.isNotEmpty) {
-                    Navigator.pushNamed(context, onTapp);
-                  }
-                },
+                onTap: onPressed ??
+                    (onTapp.isNotEmpty
+                        ? () => Navigator.pushNamed(context, onTapp)
+                        : null),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
