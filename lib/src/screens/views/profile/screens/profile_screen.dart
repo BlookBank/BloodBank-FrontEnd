@@ -10,7 +10,9 @@ import '../../components/widgets/custom_appbar.dart';
 import '../../components/widgets/custom_red_btn.dart';
 import '../../edit_profile/screens/edit_profile_screen.dart';
 
+/// Perfil del usuario con sesión iniciada. Los datos se leen de Firestore (users/{uid}) con un FutureBuilder.
 class ProfileScreen extends StatefulWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = "/profile";
 
   const ProfileScreen({super.key});
@@ -19,25 +21,32 @@ class ProfileScreen extends StatefulWidget {
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
+/// Estado: guarda el Future que lee el perfil para poder recargarlo.
 class _ProfileScreenState extends State<ProfileScreen> {
+  /// Servicio que lee y guarda el perfil en Firestore.
   final ProfileService _profileService = ProfileService();
+  /// Lectura del perfil en curso; el FutureBuilder la espera y dibuja el resultado.
   late Future<UserProfileModel?> _profileFuture;
 
+  /// Inicia la lectura del perfil al abrir la pantalla.
   @override
   void initState() {
     super.initState();
     _profileFuture = _profileService.getCurrentProfile();
   }
 
+  /// Vuelve a leer el perfil (se usa después de editarlo o al reintentar).
   void _reload() {
     setState(() {
       _profileFuture = _profileService.getCurrentProfile();
     });
   }
 
+  /// Texto a mostrar: el valor o un guion si esta vacio.
   String _valueOrDash(String? value) =>
       (value == null || value.trim().isEmpty) ? "-" : value;
 
+  /// Dibuja el perfil segun el estado de la lectura: cargando, error o datos.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,6 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actionTrue: true,
         profileFalse: true,
       ),
+      // Mientras carga muestra un indicador; si falla, un botón para reintentar; si no, los datos.
       body: FutureBuilder<UserProfileModel?>(
         future: _profileFuture,
         builder: (context, snapshot) {
@@ -128,6 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   fillColor: AppColor.redColor,
                   borderClr: Colors.transparent,
                   onTap: () async {
+                    // Abre la edición; si devuelve true se vuelve a leer el perfil para ver los cambios.
                     final updated = await Navigator.push<bool>(
                       context,
                       MaterialPageRoute(

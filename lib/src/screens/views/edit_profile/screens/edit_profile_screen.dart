@@ -12,9 +12,12 @@ import '../../components/widgets/custom_form_textfield.dart';
 import '../../components/widgets/custom_gender_box.dart';
 import '../../components/widgets/custom_red_btn.dart';
 
+/// Edición del perfil: guarda en Firestore y sincroniza con el back (SQL Server).
 class EditProfileScreen extends StatefulWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = "/edit-profile";
 
+  /// Perfil a editar; si no llega (ruta con nombre) se lee de Firestore.
   final UserProfileModel? initialProfile;
 
   const EditProfileScreen({super.key, this.initialProfile});
@@ -23,25 +26,35 @@ class EditProfileScreen extends StatefulWidget {
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
+/// Estado: campos editables y bandera de guardado.
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  /// Servicio que guarda el perfil.
   final ProfileService _profileService = ProfileService();
 
+  /// Controladores de los campos editables.
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
+  /// Perfil original; sirve de base para armar el perfil actualizado.
   UserProfileModel? _profile;
+  /// Grupo sanguíneo elegido.
   String _bloodGroup = "A+";
+  /// Género elegido.
   String _gender = "male";
+  /// true mientras se lee el perfil inicial.
   bool _isLoading = true;
+  /// true mientras se guardan los cambios.
   bool _isSaving = false;
 
+  /// Carga el perfil a editar al abrir la pantalla.
   @override
   void initState() {
     super.initState();
     _loadProfile();
   }
 
+  /// Toma el perfil recibido (o lo lee de Firestore) y rellena los campos.
   Future<void> _loadProfile() async {
     final profile = widget.initialProfile ?? await _profileService.getCurrentProfile();
     if (!mounted) return;
@@ -58,6 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() => _isLoading = false);
   }
 
+  /// Libera los controladores al cerrar la pantalla.
   @override
   void dispose() {
     _nameController.dispose();
@@ -66,6 +80,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
+  /// Valida el nombre, guarda los cambios y vuelve al perfil indicando que hubo cambios.
   Future<void> _saveChanges() async {
     final profile = _profile;
     if (profile == null) return;
@@ -100,6 +115,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           content: Text("Profile updated successfully!"),
         ),
       );
+      // true avisa al perfil que debe volver a leer los datos.
       Navigator.pop(context, true);
     } catch (e) {
       if (!mounted) return;
@@ -114,6 +130,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  /// Dibuja el formulario de edición.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

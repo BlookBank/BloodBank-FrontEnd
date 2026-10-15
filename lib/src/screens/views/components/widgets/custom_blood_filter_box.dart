@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../general/config/colors.dart';
 import '../../../../general/utils/responsive.dart';
 
+/// Fila horizontal de chips para filtrar solicitudes por grupo sanguíneo (incluye "All").
 class CustomBloodFilterBox extends StatefulWidget {
+  /// Se llama con el grupo elegido cada vez que cambia el filtro.
   final ValueChanged<String>? onFilterChanged;
 
   const CustomBloodFilterBox({super.key, this.onFilterChanged});
@@ -12,8 +14,11 @@ class CustomBloodFilterBox extends StatefulWidget {
   State<CustomBloodFilterBox> createState() => _CustomBloodFilterBoxState();
 }
 
+/// Estado: recuerda cual chip esta seleccionado.
 class _CustomBloodFilterBoxState extends State<CustomBloodFilterBox> {
+  /// Posicion del chip seleccionado (0 = All).
   int selectedIndex = 0;
+  /// Opciones del filtro, en el mismo orden en que se dibujan.
   final bloodList = [
     "All",
     "A+",
@@ -26,6 +31,7 @@ class _CustomBloodFilterBoxState extends State<CustomBloodFilterBox> {
     "O-",
   ];
 
+  /// Dibuja la lista horizontal; el chip seleccionado se rellena de rojo.
   @override
   Widget build(BuildContext context) {
     return SizedBox(

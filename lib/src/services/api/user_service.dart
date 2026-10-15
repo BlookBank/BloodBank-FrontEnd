@@ -1,9 +1,12 @@
 import '../../models/user_profile_model.dart';
 import 'api_client.dart';
 
+/// Acceso a los usuarios del back (api/Users): copia del perfil en SQL Server.
 class UserService {
+  /// Cliente HTTP compartido (agrega el token de Firebase en cada petición).
   final ApiClient _client = ApiClient();
 
+  /// Devuelve el perfil guardado en SQL Server, o null si todavia no existe o falla la consulta.
   Future<UserProfileModel?> getUserById(String id) async {
     try {
       final data = await _client.get('/users/$id');
@@ -14,6 +17,7 @@ class UserService {
     return null;
   }
 
+  /// Crea o actualiza en SQL Server al usuario autenticado. El id lo toma el back del token.
   Future<UserProfileModel> syncUser({
     required String id,
     required String email,
@@ -37,6 +41,7 @@ class UserService {
     return UserProfileModel.fromJson(data as Map<String, dynamic>);
   }
 
+  /// Actualiza solo los campos indicados del perfil (actualización parcial).
   Future<UserProfileModel?> updateUser({
     required String id,
     String? name,
@@ -45,6 +50,7 @@ class UserService {
     String? bloodGroup,
     String? location,
   }) async {
+    // Solo se envían los campos que no son null.
     final payload = <String, dynamic>{};
     if (name != null) payload['name'] = name;
     if (phoneNumber != null) payload['phoneNumber'] = phoneNumber;

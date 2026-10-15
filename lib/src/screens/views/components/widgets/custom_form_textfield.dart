@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 import '../../../../general/config/colors.dart';
 import '../../../../general/utils/responsive.dart';
 
+/// Campo de texto gris con esquinas suaves, usado en los formularios de solicitud, donante y perfil.
 // ignore: must_be_immutable
 class CustomFormTextfield extends StatelessWidget {
+  /// Texto de ayuda que se muestra cuando el campo esta vacio.
   String hintTextt;
+  /// Icono opcional a la izquierda.
   IconData? prefixxIcon;
+  /// Si es false se oculta el icono izquierdo; con true o null se muestra [prefixxIcon].
   bool? prefixFalse;
+  /// Controlador para leer o cambiar el texto desde la pantalla.
   TextEditingController? controller;
 
   CustomFormTextfield({
@@ -46,6 +51,7 @@ class CustomFormTextfield extends StatelessWidget {
   }
 }
 
+/// Etiqueta con "*required" fijo. No se usa en las pantallas actuales.
 // ignore: must_be_immutable
 class CustomAuthText extends StatelessWidget {
   String textt;

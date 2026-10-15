@@ -1,9 +1,12 @@
 import '../../models/donor_model.dart';
 import 'api_client.dart';
 
+/// Acceso a los donantes del back (api/Donors).
 class DonorService {
+  /// Cliente HTTP compartido (agrega el token de Firebase en cada petición).
   final ApiClient _client = ApiClient();
 
+  /// Lista donantes; [bloodGroup] y [isAvailable] filtran en el servidor.
   Future<List<DonorModel>> getDonors({String? bloodGroup, bool? isAvailable}) async {
     final queryParams = <String, String>{};
     if (bloodGroup != null && bloodGroup.isNotEmpty && bloodGroup.toLowerCase() != 'all') {
@@ -20,6 +23,7 @@ class DonorService {
     return [];
   }
 
+  /// Devuelve un donante por id.
   Future<DonorModel?> getDonorById(int id) async {
     final data = await _client.get('/donors/$id');
     if (data is Map<String, dynamic>) {
@@ -28,6 +32,7 @@ class DonorService {
     return null;
   }
 
+  /// Registra al usuario como donante (o actualiza su registro si ya lo era).
   Future<DonorModel> registerDonor({
     required String name,
     required String contactNumber,
@@ -37,6 +42,7 @@ class DonorService {
     String? pictureUrl,
     String? userId,
   }) async {
+    // Cuerpo JSON que espera el back (CreateDonorDto).
     final payload = {
       'name': name,
       'contactNumber': contactNumber,

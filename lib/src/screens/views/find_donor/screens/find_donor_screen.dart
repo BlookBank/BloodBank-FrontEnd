@@ -12,7 +12,9 @@ import '../../components/widgets/custom_gender_box.dart';
 import '../../components/widgets/custom_red_btn.dart';
 import '../../components/widgets/find_donor_date_picker.dart';
 
+/// Formulario para pedir sangre: al enviarlo se crea una solicitud en el back (SQL Server) que aparece en el feed.
 class FindDonorScreen extends StatefulWidget {
+  /// Nombre de la ruta registrada en main.dart.
   static const pageRoute = '/find-donor';
 
   const FindDonorScreen({super.key});
@@ -21,9 +23,12 @@ class FindDonorScreen extends StatefulWidget {
   State<FindDonorScreen> createState() => _FindDonorScreenState();
 }
 
+/// Estado del formulario: controladores de texto y opciones elegidas.
 class _FindDonorScreenState extends State<FindDonorScreen> {
+  /// Servicio que crea la solicitud en el back.
   final BloodRequestService _bloodRequestService = BloodRequestService();
 
+  /// Controladores de los campos de texto del formulario.
   final TextEditingController _bagsController = TextEditingController(text: "1");
   final TextEditingController _contactController = TextEditingController();
   final TextEditingController _emergencyContactController = TextEditingController();
@@ -32,11 +37,16 @@ class _FindDonorScreenState extends State<FindDonorScreen> {
   final TextEditingController _othersController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
+  /// Grupo sanguíneo elegido en la cuadricula.
   String _selectedBloodGroup = "A+";
+  /// Género del paciente elegido.
   String _selectedGender = "male";
+  /// Fecha limite; por defecto dentro de 2 días.
   DateTime _needBeforeDate = DateTime.now().add(const Duration(days: 2));
+  /// true mientras se envía la solicitud.
   bool _isLoading = false;
 
+  /// Libera los controladores al cerrar la pantalla.
   @override
   void dispose() {
     _bagsController.dispose();
@@ -49,6 +59,7 @@ class _FindDonorScreenState extends State<FindDonorScreen> {
     super.dispose();
   }
 
+  /// Valida los campos obligatorios, crea la solicitud y vuelve a la pantalla anterior.
   Future<void> _submitRequest() async {
     final patientName = _patientNameController.text.trim();
     final contactNumber = _contactController.text.trim();
@@ -69,6 +80,7 @@ class _FindDonorScreenState extends State<FindDonorScreen> {
     try {
       final bags = int.tryParse(_bagsController.text.trim()) ?? 1;
 
+      // Envía la solicitud; el back asigna como solicitante al usuario del token.
       await _bloodRequestService.createRequest(
         patientName: patientName,
         bloodGroup: _selectedBloodGroup,
@@ -107,6 +119,7 @@ class _FindDonorScreenState extends State<FindDonorScreen> {
     }
   }
 
+  /// Dibuja el formulario.
   @override
   Widget build(BuildContext context) {
     return Scaffold(

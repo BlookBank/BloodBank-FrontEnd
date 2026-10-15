@@ -16,10 +16,13 @@ import 'src/screens/views/home/screens/home_screen.dart';
 import 'src/screens/views/onboarding/splash_screen.dart';
 import 'src/screens/views/profile/screens/profile_screen.dart';
 
+/// Punto de entrada de la app: inicializa Firebase y arranca la interfaz.
 Future<void> main() async {
+  // Obligatorio antes de usar plugins nativos (Firebase) antes de llamar a runApp.
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+    // Conecta la app con el proyecto de Firebase usando la configuración de la plataforma actual.
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   } catch (e) {
     if (kDebugMode) {
@@ -30,6 +33,7 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+/// Raiz de la aplicación: define el tema global y la tabla de rutas.
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -38,6 +42,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
+      // Tema global: rojo del proyecto como color primario, fondo blanco y la fuente Poppins en todos los textos.
       theme: ThemeData(
         primaryColor: AppColor.redColor,
         colorScheme: ColorScheme.fromSeed(
@@ -48,7 +53,9 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins',
         useMaterial3: true,
       ),
+      // Siempre se arranca en el splash; allí se decide si ir al Home (sesión guardada) o al onboarding.
       initialRoute: SplashScreen.pageRoute,
+      // Rutas con nombre, usadas con Navigator.pushNamed desde el menú, la barra superior y las tarjetas.
       routes: {
         SplashScreen.pageRoute: (context) => const SplashScreen(),
         LoginScreen.pageRoute: (context) => const LoginScreen(),

@@ -1,18 +1,34 @@
+/// Solicitud de sangre tal como la devuelve el back (tabla BloodRequests).
 class BloodRequestModel {
+  /// Identificador de la solicitud.
   final int id;
+  /// UID de Firebase de quien publicó la solicitud.
   final String? requesterId;
+  /// Nombre del paciente.
   final String patientName;
+  /// Grupo sanguíneo requerido (A+, O-, ...).
   final String bloodGroup;
+  /// Cantidad de bolsas necesarias.
   final int numberOfBags;
+  /// Teléfono principal de contacto.
   final String contactNumber;
+  /// Teléfono alterno de emergencia.
   final String? emergencyContact;
+  /// Motivo o caso clínico.
   final String caseDescription;
+  /// Género del paciente.
   final String? gender;
+  /// Fecha limite en la que se necesita la sangre.
   final DateTime needBeforeDate;
+  /// Ciudad u hospital.
   final String location;
+  /// Notas adicionales.
   final String? others;
+  /// Estado: Active, Fulfilled o Cancelled.
   final String status;
+  /// Fecha de publicación.
   final DateTime createdAt;
+  /// Texto relativo calculado por el back ("5 minute ago").
   final String timeAgo;
 
   BloodRequestModel({
@@ -33,6 +49,7 @@ class BloodRequestModel {
     required this.timeAgo,
   });
 
+  /// Construye el modelo desde el JSON del back; los campos faltantes usan valores por defecto.
   factory BloodRequestModel.fromJson(Map<String, dynamic> json) {
     return BloodRequestModel(
       id: json['id'] as int? ?? 0,
@@ -57,6 +74,7 @@ class BloodRequestModel {
     );
   }
 
+  /// Convierte el modelo a JSON para enviarlo al back.
   Map<String, dynamic> toJson() {
     return {
       if (id > 0) 'id': id,
@@ -75,10 +93,12 @@ class BloodRequestModel {
     };
   }
 
+  /// Fecha limite lista para mostrar, por ejemplo "17 October 2026".
   String get formattedNeedBeforeDate {
     return "${needBeforeDate.day} ${_monthName(needBeforeDate.month)} ${needBeforeDate.year}";
   }
 
+  /// Nombre del mes en ingles para un número del 1 al 12.
   static String _monthName(int month) {
     const months = [
       "January", "February", "March", "April", "May", "June",

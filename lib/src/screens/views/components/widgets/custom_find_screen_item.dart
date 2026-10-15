@@ -5,8 +5,12 @@ import '../../../../general/config/colors.dart';
 import '../../../../general/utils/responsive.dart';
 
 
+/// Etiqueta de un campo de formulario; muestra "*required" en rojo a la derecha si el campo es obligatorio.
+/// (El nombre del archivo es heredado de la plantilla; la clase se usa en varias pantallas.)
 class CustomFormText extends StatelessWidget {
+  /// Texto de la etiqueta.
   final String textt;
+  /// true muestra la marca "*required".
   final bool isRequired;
   const CustomFormText({super.key, required this.textt, required this.isRequired});
 

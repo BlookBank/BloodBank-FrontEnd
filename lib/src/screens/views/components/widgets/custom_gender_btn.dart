@@ -5,6 +5,7 @@ import '../../../../general/config/colors.dart';
 import '../../../../general/utils/responsive.dart';
 
 
+/// Tarjeta estática de género masculino. No se usa en las pantallas actuales (se usa CustomGenderBox).
 class CustomGenderBtn extends StatelessWidget {
   const CustomGenderBtn({super.key});
 

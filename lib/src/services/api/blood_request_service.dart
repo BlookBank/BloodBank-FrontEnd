@@ -1,9 +1,12 @@
 import '../../models/blood_request_model.dart';
 import 'api_client.dart';
 
+/// Acceso a las solicitudes de sangre del back (api/BloodRequests).
 class BloodRequestService {
+  /// Cliente HTTP compartido (agrega el token de Firebase en cada petición).
   final ApiClient _client = ApiClient();
 
+  /// Lista las solicitudes; [bloodGroup] y [status] filtran en el servidor ("All" significa sin filtro).
   Future<List<BloodRequestModel>> getRequests({String? bloodGroup, String? status}) async {
     final queryParams = <String, String>{};
     if (bloodGroup != null && bloodGroup.isNotEmpty && bloodGroup.toLowerCase() != 'all') {
@@ -20,6 +23,7 @@ class BloodRequestService {
     return [];
   }
 
+  /// Devuelve una solicitud por id.
   Future<BloodRequestModel?> getRequestById(int id) async {
     final data = await _client.get('/bloodrequests/$id');
     if (data is Map<String, dynamic>) {
@@ -28,6 +32,7 @@ class BloodRequestService {
     return null;
   }
 
+  /// Publica una solicitud nueva. El solicitante lo asigna el back a partir del token.
   Future<BloodRequestModel> createRequest({
     required String patientName,
     required String bloodGroup,
@@ -41,6 +46,7 @@ class BloodRequestService {
     String? others,
     String? requesterId,
   }) async {
+    // Cuerpo JSON que espera el back (CreateBloodRequestDto).
     final payload = {
       'patientName': patientName,
       'bloodGroup': bloodGroup,

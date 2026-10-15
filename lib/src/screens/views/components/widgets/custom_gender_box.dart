@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../../../../general/config/colors.dart';
 import '../../../../general/utils/responsive.dart';
 
+/// Selector de género con dos tarjetas (male / female) con iconos que cambian de color al seleccionarse.
 class CustomGenderBox extends StatefulWidget {
+  /// Se llama con "male" o "female" cada vez que el usuario elige.
   final ValueChanged<String>? onGenderSelected;
+  /// Género que aparece seleccionado al abrir.
   final String? initialGender;
 
   const CustomGenderBox({
@@ -17,13 +20,17 @@ class CustomGenderBox extends StatefulWidget {
   State<CustomGenderBox> createState() => _CustomGenderBoxState();
 }
 
+/// Estado: recuerda cual tarjeta esta seleccionada.
 class _CustomGenderBoxState extends State<CustomGenderBox> {
+  /// Posicion de la opción seleccionada dentro de [genderName].
   int selectedIndex = 0;
+  /// Valores posibles; también forman el nombre de las imágenes (male_w.png, female_r.png...).
   final genderName = [
     "male",
     "female",
   ];
 
+  // Si llega un género inicial, se marca como seleccionado.
   @override
   void initState() {
     super.initState();
@@ -33,6 +40,7 @@ class _CustomGenderBoxState extends State<CustomGenderBox> {
     }
   }
 
+  /// Dibuja las dos tarjetas; la seleccionada usa la imagen blanca sobre fondo rojo.
   @override
   Widget build(BuildContext context) {
     return Center(
