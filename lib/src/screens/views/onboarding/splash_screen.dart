@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../home/screens/home_screen.dart';
 import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,14 +15,40 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Timer? _timer;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingScreen(),));
-    },);
+    _timer = Timer(const Duration(seconds: 3), _goNext);
+  }
+
+  /// Firebase guarda la sesión en el dispositivo: si ya hay un usuario
+  /// autenticado se entra directo al Home; si no, onboarding -> login.
+  void _goNext() {
+    if (!mounted) return;
+
+    User? user;
+    try {
+      user = FirebaseAuth.instance.currentUser;
+    } catch (_) {
+      user = null;
+    }
+
+    if (user != null) {
+      Navigator.pushReplacementNamed(context, HomeScreen.pageRoute);
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => OnboardingScreen()),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -29,9 +57,10 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.black,
-          image: DecorationImage(image: AssetImage('assets/images/splash.png'),
+          image: DecorationImage(
+            image: AssetImage('assets/images/splash.png'),
             fit: BoxFit.cover,
             opacity: 0.6,
           ),
@@ -40,4 +69,3 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
-

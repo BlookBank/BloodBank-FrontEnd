@@ -2,26 +2,28 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'firebase_options.dart';
 import 'src/general/config/colors.dart';
 import 'src/general/config/config.dart';
-import 'src/screens/views/all_requests/screens/all_request_screen.dart';
 import 'src/screens/views/all_request_details/screens/request_details_screen.dart';
+import 'src/screens/views/all_requests/screens/all_request_screen.dart';
 import 'src/screens/views/auth/login_screen.dart';
 import 'src/screens/views/auth/register_screen.dart';
 import 'src/screens/views/donor_registration/screens/donor_registration_screen.dart';
+import 'src/screens/views/edit_profile/screens/edit_profile_screen.dart';
 import 'src/screens/views/find_donor/screens/find_donor_screen.dart';
 import 'src/screens/views/home/screens/home_screen.dart';
 import 'src/screens/views/onboarding/splash_screen.dart';
 import 'src/screens/views/profile/screens/profile_screen.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   } catch (e) {
     if (kDebugMode) {
-      print("Firebase initialization notice: $e");
+      print("Firebase initialization error: $e");
     }
   }
 
@@ -57,6 +59,7 @@ class MyApp extends StatelessWidget {
         FindDonorScreen.pageRoute: (context) => const FindDonorScreen(),
         DonorRegistrationForm.pageRoute: (context) => const DonorRegistrationForm(),
         ProfileScreen.pageRoute: (context) => const ProfileScreen(),
+        EditProfileScreen.pageRoute: (context) => const EditProfileScreen(),
       },
     );
   }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../constants/validators.dart';
-import '../home/screens/home_screen.dart';
-import '../components/widgets/main_button.dart';
+import 'package:bloodbank/src/constants/validators.dart';
+import 'package:bloodbank/src/screens/views/auth/forgot_password_screen.dart';
+import 'package:bloodbank/src/screens/views/auth/register_screen.dart';
+import 'package:bloodbank/src/screens/views/components/widgets/main_button.dart';
+import 'package:bloodbank/src/screens/views/home/screens/home_screen.dart';
+
 import '../../../services/auth_service_firebase.dart';
-import 'forgot_password_screen.dart';
-import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const pageRoute = "/login-screen";
@@ -45,9 +46,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!mounted) return;
 
-      // 5. Manejar respuesta
       setState(() => _isLoading = false);
 
+      // 5. Si la autenticación fue exitosa, entramos al Home (la sesión queda
+      // guardada por Firebase y se restaura al abrir la app).
       if (response == "Success") {
         Navigator.pushReplacementNamed(context, HomeScreen.pageRoute);
       } else {

@@ -5,6 +5,7 @@ import '../../../../general/utils/responsive.dart';
 import '../../../../models/blood_request_model.dart';
 import '../../components/widgets/custom_appbar.dart';
 import '../widgets/custom_call_btn.dart';
+import '../../chat/screens/chat_screen.dart';
 import '../widgets/request_details_item.dart';
 
 class RequestDetailsScreen extends StatelessWidget {
@@ -71,10 +72,23 @@ class RequestDetailsScreen extends StatelessWidget {
                 borderClr: Colors.transparent,
               ),
               verticalSpace(twentyPixelHeight(context) * .5),
-              const CustomCallButton(
-                textt: "Message",
-                textColor: AppColor.redColor,
-                fillColor: AppColor.whiteColor,
+              InkWell(
+                borderRadius: BorderRadius.circular(10),
+                onTap: request == null
+                    ? null
+                    : () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatScreen(request: request),
+                          ),
+                        );
+                      },
+                child: const CustomCallButton(
+                  textt: "Message",
+                  textColor: AppColor.redColor,
+                  fillColor: AppColor.whiteColor,
+                ),
               ),
             ],
           ),

@@ -1,4 +1,4 @@
-package com.example.lowkey
+package com.bloodbank.app
 
 import io.flutter.embedding.android.FlutterActivity
 

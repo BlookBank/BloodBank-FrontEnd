@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../../../general/config/colors.dart';
 import '../../../../general/utils/blank_space.dart';
@@ -27,11 +29,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<BloodRequestModel> _requests = [];
   bool _isLoading = true;
+  Timer? _liveTimer;
 
   @override
   void initState() {
     super.initState();
     _loadRequests();
+    // Datos en vivo: se vuelve a consultar el back cada 15 segundos
+    _liveTimer = Timer.periodic(const Duration(seconds: 15), (_) => _loadRequests());
+  }
+
+  @override
+  void dispose() {
+    _liveTimer?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadRequests() async {
@@ -217,9 +228,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: CircularProgressIndicator(color: AppColor.redColor),
                     ),
                   )
+                else if (_requests.isEmpty)
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: twentyPixelHeight(context) * 2),
+                    child: const Center(
+                      child: Text(
+                        "No blood requests yet. Pull down to refresh.",
+                        style: TextStyle(fontFamily: 'Poppins', color: AppColor.textAss),
+                      ),
+                    ),
+                  )
                 else
                   ListView.builder(
-                    itemCount: _requests.isNotEmpty ? _requests.length : 3,
+                    itemCount: _requests.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
@@ -227,9 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.only(
                           top: twentyPixelHeight(context) * 1,
                         ),
-                        child: CustomRequestFeedItem(
-                          request: _requests.isNotEmpty ? _requests[index] : null,
-                        ),
+                        child: CustomRequestFeedItem(request: _requests[index]),
                       );
                     },
                   ),

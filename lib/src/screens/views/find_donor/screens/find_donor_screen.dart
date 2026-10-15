@@ -24,12 +24,13 @@ class FindDonorScreen extends StatefulWidget {
 class _FindDonorScreenState extends State<FindDonorScreen> {
   final BloodRequestService _bloodRequestService = BloodRequestService();
 
-  final TextEditingController _bagsController = TextEditingController(text: "3");
-  final TextEditingController _contactController = TextEditingController(text: "+18092249304");
-  final TextEditingController _emergencyContactController = TextEditingController(text: "+18095551234");
-  final TextEditingController _patientNameController = TextEditingController(text: "Jorge Perez");
-  final TextEditingController _caseController = TextEditingController(text: "Cancer Patient");
-  final TextEditingController _othersController = TextEditingController(text: "Urgent need");
+  final TextEditingController _bagsController = TextEditingController(text: "1");
+  final TextEditingController _contactController = TextEditingController();
+  final TextEditingController _emergencyContactController = TextEditingController();
+  final TextEditingController _patientNameController = TextEditingController();
+  final TextEditingController _caseController = TextEditingController();
+  final TextEditingController _othersController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
 
   String _selectedBloodGroup = "A+";
   String _selectedGender = "male";
@@ -44,18 +45,20 @@ class _FindDonorScreenState extends State<FindDonorScreen> {
     _patientNameController.dispose();
     _caseController.dispose();
     _othersController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 
   Future<void> _submitRequest() async {
     final patientName = _patientNameController.text.trim();
     final contactNumber = _contactController.text.trim();
+    final location = _locationController.text.trim();
 
-    if (patientName.isEmpty || contactNumber.isEmpty) {
+    if (patientName.isEmpty || contactNumber.isEmpty || location.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: Colors.red,
-          content: Text("Please fill in patient name and contact number"),
+          content: Text("Please fill in patient name, contact number and location"),
         ),
       );
       return;
@@ -77,7 +80,7 @@ class _FindDonorScreenState extends State<FindDonorScreen> {
             : "Blood requirement",
         gender: _selectedGender,
         needBeforeDate: _needBeforeDate,
-        location: "Santo Domingo, RD",
+        location: location,
         others: _othersController.text.trim(),
       );
 
@@ -225,6 +228,18 @@ class _FindDonorScreenState extends State<FindDonorScreen> {
                 prefixFalse: false,
                 prefixxIcon: Icons.person,
                 controller: _caseController,
+              ),
+              verticalSpace(twentyPixelHeight(context)),
+              const CustomFormText(
+                textt: "Location",
+                isRequired: true,
+              ),
+              verticalSpace(twentyPixelHeight(context) * .5),
+              CustomFormTextfield(
+                hintTextt: "Santo Domingo, RD",
+                prefixFalse: true,
+                prefixxIcon: Icons.location_on,
+                controller: _locationController,
               ),
               verticalSpace(twentyPixelHeight(context)),
               const CustomFormText(

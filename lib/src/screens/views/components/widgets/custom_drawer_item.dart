@@ -19,7 +19,9 @@ class CustomDrawerItem extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: (){
-                  //Navigator.pushNamed(context, onTapp);
+                  if (onTapp.isNotEmpty) {
+                    Navigator.pushNamed(context, onTapp);
+                  }
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -41,4 +43,3 @@ class CustomDrawerItem extends StatelessWidget {
             );
   }
 }
-

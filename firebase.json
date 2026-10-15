@@ -1,1 +1,29 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"blood-donation-project-8bf72","appId":"1:543735446553:android:44a0ba61066e50eed8be88","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"blood-donation-project-8bf72","configurations":{"android":"1:543735446553:android:44a0ba61066e50eed8be88"}}}}}}
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "blood-donation-project-fb147",
+          "appId": "1:763245927213:android:19ce0ee9a57432051a11a4",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "blood-donation-project-fb147",
+          "configurations": {
+            "android": "1:763245927213:android:19ce0ee9a57432051a11a4"
+          }
+        }
+      }
+    }
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true
+    }
+  }
+}

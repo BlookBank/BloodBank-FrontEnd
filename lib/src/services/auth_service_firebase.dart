@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+
+import '../models/user_profile_model.dart';
 import '../repositories/auth_repository.dart';
 import 'api/user_service.dart';
+import 'profile_service.dart';
 
 class AuthServiceFirebase implements AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final UserService _userService = UserService();
+  final ProfileService _profileService = ProfileService();
 
   @override
   User? get currentUser => _auth.currentUser;
@@ -20,7 +24,7 @@ class AuthServiceFirebase implements AuthRepository {
       if (error.code == "user-not-found") {
         res = "User not found";
       } else if (error.code == "wrong-password" || error.code == "invalid-credential") {
-        res = "Wrong password provided for this user";
+        res = "Wrong email or password";
       } else {
         res = error.message ?? error.code;
       }
@@ -42,23 +46,31 @@ class AuthServiceFirebase implements AuthRepository {
     String res = "Something went wrong";
 
     try {
-      final userCredential = await _auth.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final uid = userCredential.user?.uid;
-      if (uid != null) {
-        // Persist/sync user profile cleanly in the .NET backend
+      final user = credential.user;
+      if (user != null) {
+        await user.updateDisplayName(name);
+
+        final profile = UserProfileModel(
+          id: user.uid,
+          email: email,
+          name: name,
+          createdAt: DateTime.now(),
+        );
+
+        // 1) El perfil se guarda en Firebase (Firestore: users/{uid})
+        await _profileService.saveProfile(profile, isNew: true);
+
+        // 2) Se registra en la tabla de usuarios de SQL Server a través del back
         try {
-          await _userService.syncUser(
-            id: uid,
-            email: email,
-            name: name,
-          );
+          await _userService.syncUser(id: user.uid, email: email, name: name);
         } catch (apiError) {
           if (kDebugMode) {
-            print("Note: Could not sync user with .NET backend: $apiError");
+            print("Could not sync user with the backend: $apiError");
           }
         }
       }

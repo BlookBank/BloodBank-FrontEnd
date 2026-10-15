@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../general/config/colors.dart';
@@ -23,12 +24,12 @@ class DonorRegistrationForm extends StatefulWidget {
 class _DonorRegistrationFormState extends State<DonorRegistrationForm> {
   final DonorService _donorService = DonorService();
 
-  final TextEditingController _nameController = TextEditingController(text: "Jorge Perez");
-  final TextEditingController _contactController = TextEditingController(text: "+18092249304");
-  final TextEditingController _locationController = TextEditingController(text: "Santo Domingo, RD");
+  final TextEditingController _nameController = TextEditingController(text: FirebaseAuth.instance.currentUser?.displayName ?? "");
+  final TextEditingController _contactController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
 
   String _selectedBloodGroup = "A+";
-  DateTime? _lastDonationDate = DateTime.now().subtract(const Duration(days: 90));
+  DateTime? _lastDonationDate;
   bool _isLoading = false;
 
   @override
@@ -44,11 +45,11 @@ class _DonorRegistrationFormState extends State<DonorRegistrationForm> {
     final contact = _contactController.text.trim();
     final location = _locationController.text.trim();
 
-    if (name.isEmpty || contact.isEmpty) {
+    if (name.isEmpty || contact.isEmpty || location.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           backgroundColor: Colors.red,
-          content: Text("Please fill in your name and contact number"),
+          content: Text("Please fill in your name, contact number and location"),
         ),
       );
       return;
@@ -61,7 +62,7 @@ class _DonorRegistrationFormState extends State<DonorRegistrationForm> {
         name: name,
         contactNumber: contact,
         bloodGroup: _selectedBloodGroup,
-        location: location.isNotEmpty ? location : "Santo Domingo, RD",
+        location: location,
         lastDonationDate: _lastDonationDate,
       );
 

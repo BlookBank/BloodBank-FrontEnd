@@ -8,4 +8,3 @@ class MainScreen extends StatelessWidget {
     return Scaffold();
   }
 }
-

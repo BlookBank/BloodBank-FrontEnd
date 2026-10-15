@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../../general/config/colors.dart';
@@ -22,15 +24,27 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
   List<BloodRequestModel> _requests = [];
   bool _isLoading = true;
   String _currentFilter = "All";
+  Timer? _liveTimer;
 
   @override
   void initState() {
     super.initState();
     _fetchRequests();
+    // Datos en vivo: se vuelve a consultar el back cada 15 segundos (sin parpadeo)
+    _liveTimer = Timer.periodic(
+      const Duration(seconds: 15),
+      (_) => _fetchRequests(null, true),
+    );
   }
 
-  Future<void> _fetchRequests([String? bloodGroup]) async {
-    setState(() => _isLoading = true);
+  @override
+  void dispose() {
+    _liveTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _fetchRequests([String? bloodGroup, bool silent = false]) async {
+    if (!silent) setState(() => _isLoading = true);
     try {
       final reqs = await _bloodRequestService.getRequests(bloodGroup: bloodGroup ?? _currentFilter);
       if (mounted) {
@@ -111,15 +125,14 @@ class _AllRequestScreenState extends State<AllRequestScreen> {
                     );
                   })
                 else
-                  // Graceful fallback if no requests or network offline
-                  Column(
-                    children: [
-                      const CustomRequestFeedItem(),
-                      verticalSpace(twentyPixelHeight(context) * 1),
-                      const CustomRequestFeedItem(),
-                      verticalSpace(twentyPixelHeight(context) * 1),
-                      const CustomRequestFeedItem(),
-                    ],
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: twentyPixelHeight(context) * 2),
+                    child: const Center(
+                      child: Text(
+                        "No blood requests found.",
+                        style: TextStyle(fontFamily: 'Poppins', color: AppColor.textAss),
+                      ),
+                    ),
                   ),
                 verticalSpace(twentyPixelHeight(context) * 1.5),
               ],

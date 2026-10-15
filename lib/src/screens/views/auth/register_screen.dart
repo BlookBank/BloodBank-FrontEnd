@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
-import '../../../constants/validators.dart';
+import 'package:bloodbank/src/constants/validators.dart';
+
 import '../../../repositories/auth_repository.dart';
 import '../../../services/auth_service_firebase.dart';
+import '../home/screens/home_screen.dart';
 import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -56,8 +58,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SnackBar(content: Text("Account successfully created!")),
         );
 
-        //navegamos al login o al mainpage
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen(),));
+        //Firebase ya dejó la sesión iniciada: entramos directo al Home
+        Navigator.pushNamedAndRemoveUntil(context, HomeScreen.pageRoute, (route) => false);
 
       }else{
         ScaffoldMessenger.of(context).showSnackBar(
@@ -70,12 +72,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    super.dispose();
   }
 
 
@@ -168,7 +169,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 20,),
                       TextFormField(
                         controller: _confirmPasswordController,
-                        validator: passwordValidator.call,
+                        validator: (value) => value != _passwordController.text
+                            ? 'passwords do not match'
+                            : null,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: "Confirm your password",

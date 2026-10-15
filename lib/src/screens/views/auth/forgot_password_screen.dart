@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../constants/validators.dart';
-import '../components/widgets/main_button.dart';
-import '../../../services/auth_service_firebase.dart';
-import 'otp_recovery_screen.dart';
-import 'recovery_screen.dart';
+import 'package:bloodbank/src/constants/validators.dart';
+import 'package:bloodbank/src/screens/views/auth/otp_recovery_screen.dart';
+import 'package:bloodbank/src/screens/views/components/widgets/main_button.dart';
+import 'package:bloodbank/src/services/auth_service_firebase.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});

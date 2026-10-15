@@ -6,9 +6,10 @@ import '../../../../general/config/colors.dart';
 import '../../../../general/utils/blank_space.dart';
 import '../../../../general/utils/responsive.dart';
 import '../../all_requests/screens/all_request_screen.dart';
+import '../../../../services/auth_service_firebase.dart';
+import '../../auth/login_screen.dart';
 import '../../donor_registration/screens/donor_registration_screen.dart';
 import '../../find_donor/screens/find_donor_screen.dart';
-import '../../home/screens/home_screen.dart';
 import '../../profile/screens/profile_screen.dart';
 import 'custom_drawer_item.dart';
 
@@ -51,9 +52,11 @@ class HomeDrawer extends StatelessWidget {
                   ),
                 ),
                 horizontalSpace(twentyPixelWidth(context) * 1),
-                const Text(
-                  "Jorge Perez",
-                  style: TextStyle(
+                Text(
+                  FirebaseAuth.instance.currentUser?.displayName ??
+                      FirebaseAuth.instance.currentUser?.email ??
+                      "Guest",
+                  style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -87,8 +90,13 @@ class HomeDrawer extends StatelessWidget {
             ),
 
             TextButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
+              onPressed: () async {
+                final navigator = Navigator.of(context);
+                await AuthServiceFirebase().signOut();
+                navigator.pushNamedAndRemoveUntil(
+                  LoginScreen.pageRoute,
+                  (route) => false,
+                );
               },
               child: const CustomDrawerItem(
                 onTapp:'',
@@ -112,7 +120,7 @@ class HomeDrawer extends StatelessWidget {
               ),),
             ),
             SizedBox(height: twentyPixelHeight(context)*3,)
-            
+
           ],
         ),
       ),

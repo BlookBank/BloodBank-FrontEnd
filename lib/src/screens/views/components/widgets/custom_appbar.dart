@@ -11,7 +11,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String titlee;
   final Widget? leadingBtn;
   final bool actionTrue;
-  final bool? profileFalse; 
+  final bool? profileFalse;
   const CustomAppBar({super.key, required this.titlee, this.leadingBtn, required this.actionTrue, this.profileFalse});
 
   @override
@@ -62,9 +62,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       );
   }
-  
+
   @override
-  
+
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
-

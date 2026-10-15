@@ -14,7 +14,7 @@ class CustomHomeContainer extends StatelessWidget {
   Color textColorr;
 
   CustomHomeContainer({
-    super.key, 
+    super.key,
     required this.containerBgColor,
     required this.containerTextt,
     required this.imageUrl,
